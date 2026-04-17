@@ -3,100 +3,236 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#1a7a4a">
+<meta name="theme-color" content="#1a1a2e">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="ルーティン">
+<meta name="apple-mobile-web-app-title" content="Routine Tracker">
 <meta name="description" content="毎日のルーティンを記録・継続するアプリ">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>ルーティントラッカー</title>
+<title>Routine Tracker</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#ffffff;--bg2:#f5f5f5;--bg3:#eaeaea;
-  --text:#111111;--text2:#555555;--text3:#888888;
-  --border:#e0e0e0;--border2:#cccccc;
-  --green:#1a7a4a;--green-light:#e6f4ee;
-  --radius:10px;--radius-sm:6px;
+  --bg-from:#0f0f0f;
+  --bg-to:#2a2a2a;
+  --bg2:rgba(255,255,255,0.06);
+  --bg3:rgba(255,255,255,0.10);
+  --bg-card:rgba(255,255,255,0.07);
+  --bg-card-hover:rgba(255,255,255,0.11);
+  --text:#f0f0f0;
+  --text2:#aaaaaa;
+  --text3:#666666;
+  --border:rgba(255,255,255,0.10);
+  --border2:rgba(255,255,255,0.18);
+  --green:#3ecf8e;
+  --green-dim:rgba(62,207,142,0.15);
+  --green-border:rgba(62,207,142,0.4);
+  --radius:12px;
+  --radius-sm:8px;
 }
-@media(prefers-color-scheme:dark){
-  :root{
-    --bg:#1a1a1a;--bg2:#252525;--bg3:#2f2f2f;
-    --text:#f0f0f0;--text2:#aaaaaa;--text3:#777777;
-    --border:#333333;--border2:#444444;
-    --green-light:#0d3d25;
-  }
+html{min-height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sans-serif;
+  background:linear-gradient(160deg, var(--bg-from) 0%, var(--bg-to) 100%);
+  background-attachment:fixed;
+  color:var(--text);
+  max-width:600px;
+  margin:0 auto;
+  padding-bottom:80px;
+  min-height:100vh;
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sans-serif;background:var(--bg);color:var(--text);max-width:600px;margin:0 auto;padding-bottom:80px}
 /* Header */
-.header{padding:16px 20px 0;position:sticky;top:0;background:var(--bg);z-index:10;border-bottom:0.5px solid var(--border)}
-.header h1{font-size:18px;font-weight:600;margin-bottom:12px}
+.header{
+  padding:20px 20px 0;
+  position:sticky;top:0;
+  background:linear-gradient(160deg,rgba(15,15,15,0.95) 0%,rgba(30,30,30,0.95) 100%);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  z-index:10;
+  border-bottom:0.5px solid var(--border);
+}
+.header-title{
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--green);
+  margin-bottom:4px;
+}
+.header-sub{
+  font-size:20px;
+  font-weight:700;
+  color:var(--text);
+  margin-bottom:14px;
+  letter-spacing:-0.02em;
+}
 .tabs{display:flex;gap:0}
-.tab{flex:1;padding:10px 0;font-size:14px;cursor:pointer;border:none;background:none;color:var(--text2);border-bottom:2px solid transparent;transition:all 0.2s}
+.tab{
+  flex:1;padding:10px 0;font-size:13px;
+  cursor:pointer;border:none;background:none;
+  color:var(--text3);border-bottom:2px solid transparent;
+  transition:all 0.2s;letter-spacing:0.02em;
+}
 .tab.active{color:var(--green);border-bottom-color:var(--green);font-weight:600}
-/* Main content */
+/* Content */
 .content{padding:20px}
 /* Date nav */
 .date-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.date-label{font-size:16px;font-weight:600}
-.nav-btn{width:36px;height:36px;border-radius:50%;border:0.5px solid var(--border2);background:var(--bg2);cursor:pointer;font-size:18px;color:var(--text2);display:flex;align-items:center;justify-content:center}
+.date-label{font-size:15px;font-weight:600;color:var(--text)}
+.nav-btn{
+  width:36px;height:36px;border-radius:50%;
+  border:0.5px solid var(--border2);
+  background:var(--bg2);
+  cursor:pointer;font-size:18px;color:var(--text2);
+  display:flex;align-items:center;justify-content:center;
+  transition:background 0.15s;
+}
+.nav-btn:hover{background:var(--bg3)}
 /* Progress */
 .progress-row{display:flex;align-items:center;gap:10px;margin-bottom:20px}
-.progress-bar{flex:1;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.progress-bar{flex:1;height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden}
 .progress-fill{height:100%;background:var(--green);border-radius:3px;transition:width 0.3s}
 .progress-label{font-size:13px;color:var(--text2);white-space:nowrap}
 /* Section */
 .section{margin-bottom:24px}
-.section-title{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px}
+.section-title{
+  font-size:10px;font-weight:700;
+  color:var(--text3);letter-spacing:0.12em;
+  text-transform:uppercase;margin-bottom:10px;
+}
 /* Habit grid */
 .habit-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.habit-item{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg2);border-radius:var(--radius-sm);cursor:pointer;border:0.5px solid var(--border);transition:all 0.15s;-webkit-tap-highlight-color:transparent}
-.habit-item.done{background:var(--green-light);border-color:var(--green)}
-.habit-item input[type=checkbox]{accent-color:var(--green);width:18px;height:18px;flex-shrink:0}
-.habit-item label{font-size:13px;cursor:pointer;line-height:1.3}
+.habit-item{
+  display:flex;align-items:center;gap:10px;
+  padding:12px;background:var(--bg-card);
+  border-radius:var(--radius-sm);cursor:pointer;
+  border:0.5px solid var(--border);
+  transition:all 0.15s;-webkit-tap-highlight-color:transparent;
+}
+.habit-item:hover{background:var(--bg-card-hover)}
+.habit-item.done{background:var(--green-dim);border-color:var(--green-border)}
+.habit-item input[type=checkbox]{accent-color:var(--green);width:17px;height:17px;flex-shrink:0}
+.habit-item label{font-size:13px;cursor:pointer;line-height:1.3;color:var(--text)}
 /* Detail card */
-.detail-card{background:var(--bg2);border-radius:var(--radius);border:0.5px solid var(--border);padding:14px;margin-bottom:8px}
+.detail-card{
+  background:var(--bg-card);border-radius:var(--radius);
+  border:0.5px solid var(--border);padding:14px;margin-bottom:8px;
+}
 .detail-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer}
-.detail-header input[type=checkbox]{accent-color:var(--green);width:18px;height:18px;flex-shrink:0}
-.detail-header label{font-size:14px;font-weight:500;cursor:pointer}
+.detail-header input[type=checkbox]{accent-color:var(--green);width:17px;height:17px;flex-shrink:0}
+.detail-header label{font-size:14px;font-weight:500;cursor:pointer;color:var(--text)}
 .detail-fields{display:flex;flex-direction:column;gap:8px}
 .field-row{display:flex;align-items:center;gap:8px}
 .field-row label{font-size:13px;color:var(--text2);min-width:72px}
-.field-row input{flex:1;padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:14px;font-family:inherit}
+.field-row input{
+  flex:1;padding:8px 10px;
+  border:0.5px solid var(--border2);
+  border-radius:var(--radius-sm);
+  background:rgba(0,0,0,0.3);
+  color:var(--text);font-size:14px;font-family:inherit;
+}
 .field-row input:focus{outline:none;border-color:var(--green)}
 /* Sleep */
 .sleep-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 .sleep-item{display:flex;flex-direction:column;gap:4px}
 .sleep-item label{font-size:12px;color:var(--text3)}
-.sleep-item input{padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:14px;font-family:inherit}
+.sleep-item input{
+  padding:8px 10px;border:0.5px solid var(--border2);
+  border-radius:var(--radius-sm);
+  background:rgba(0,0,0,0.3);
+  color:var(--text);font-size:14px;font-family:inherit;
+}
 .sleep-item input:focus{outline:none;border-color:var(--green)}
 /* Muscle */
 .muscle-row{display:grid;grid-template-columns:1fr 80px 36px;gap:6px;margin-bottom:6px;align-items:center}
-.muscle-row input{padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:13px;font-family:inherit}
-.add-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;border:0.5px dashed var(--border2);border-radius:var(--radius-sm);background:none;color:var(--text2);font-size:13px;cursor:pointer;width:100%;margin-top:4px}
-.del-btn{width:36px;height:36px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--bg);color:var(--text2);cursor:pointer;font-size:16px}
-/* Save button */
-.save-btn{width:100%;padding:14px;border-radius:var(--radius);border:none;background:var(--green);color:#fff;font-size:16px;font-weight:600;cursor:pointer;margin-top:8px;font-family:inherit}
-.save-btn:active{opacity:0.85}
+.muscle-row input{
+  padding:8px 10px;border:0.5px solid var(--border2);
+  border-radius:var(--radius-sm);
+  background:rgba(0,0,0,0.3);
+  color:var(--text);font-size:13px;font-family:inherit;
+}
+.add-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 12px;border:0.5px dashed var(--border2);
+  border-radius:var(--radius-sm);background:none;
+  color:var(--text2);font-size:13px;cursor:pointer;width:100%;margin-top:4px;
+}
+.del-btn{
+  width:36px;height:36px;border-radius:var(--radius-sm);
+  border:0.5px solid var(--border);
+  background:rgba(0,0,0,0.2);color:var(--text2);cursor:pointer;font-size:16px;
+}
+/* Buttons */
+.save-btn{
+  width:100%;padding:14px;border-radius:var(--radius);
+  border:none;background:var(--green);
+  color:#0f0f0f;font-size:16px;font-weight:700;
+  cursor:pointer;margin-top:8px;font-family:inherit;
+  letter-spacing:0.02em;transition:opacity 0.15s;
+}
+.save-btn:active{opacity:0.8}
+.export-btn{
+  width:100%;padding:13px;border-radius:var(--radius);
+  border:0.5px solid var(--green-border);
+  background:var(--green-dim);
+  color:var(--green);font-size:15px;font-weight:600;
+  cursor:pointer;font-family:inherit;transition:opacity 0.15s;
+}
+.export-btn:active{opacity:0.75}
+/* Export section */
+.export-section{
+  background:var(--bg-card);border-radius:var(--radius);
+  border:0.5px solid var(--border);padding:16px;margin-bottom:16px;
+}
+.export-section p{font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.8}
+.export-range{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.export-range-item{display:flex;flex-direction:column;gap:4px}
+.export-range-item label{font-size:12px;color:var(--text3)}
+.export-range-item input{
+  padding:8px 10px;border:0.5px solid var(--border2);
+  border-radius:var(--radius-sm);
+  background:rgba(0,0,0,0.3);
+  color:var(--text);font-size:14px;font-family:inherit;
+}
+.record-count{font-size:13px;color:var(--text2);margin-bottom:12px}
 /* Toast */
-.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 20px;border-radius:100px;font-size:14px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:100;white-space:nowrap}
+.toast{
+  position:fixed;bottom:100px;left:50%;transform:translateX(-50%);
+  background:rgba(62,207,142,0.15);
+  border:0.5px solid var(--green-border);
+  color:var(--green);
+  padding:10px 20px;border-radius:100px;font-size:14px;
+  opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:100;white-space:nowrap;
+}
 .toast.show{opacity:1}
 /* History */
-.history-item{background:var(--bg2);border-radius:var(--radius);border:0.5px solid var(--border);padding:14px;margin-bottom:8px}
+.history-item{
+  background:var(--bg-card);border-radius:var(--radius);
+  border:0.5px solid var(--border);padding:14px;margin-bottom:8px;
+}
 .history-date-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.history-date{font-size:14px;font-weight:600}
+.history-date{font-size:14px;font-weight:600;color:var(--text)}
 .history-pct{font-size:12px;color:var(--text2)}
 .badge-row{display:flex;flex-wrap:wrap;gap:5px}
-.badge{font-size:11px;padding:3px 9px;border-radius:100px;background:var(--green-light);color:var(--green);font-weight:500}
-.badge.sleep-badge{background:var(--bg3);color:var(--text2)}
+.badge{
+  font-size:11px;padding:3px 9px;border-radius:100px;
+  background:var(--green-dim);color:var(--green);font-weight:500;
+  border:0.5px solid var(--green-border);
+}
+.badge.sleep-badge{background:var(--bg2);color:var(--text2);border-color:var(--border)}
 /* Graph */
 .chart-wrap{position:relative;width:100%;height:220px;margin-bottom:20px}
-.select-input{width:100%;padding:10px 12px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:14px;font-family:inherit;margin-bottom:16px}
+.select-input{
+  width:100%;padding:10px 12px;
+  border:0.5px solid var(--border2);border-radius:var(--radius-sm);
+  background:rgba(0,0,0,0.3);color:var(--text);
+  font-size:14px;font-family:inherit;margin-bottom:16px;
+}
 .streak-label{font-size:13px;color:var(--text2);margin-bottom:8px}
 .streak-grid{display:grid;grid-template-columns:repeat(auto-fill,20px);gap:3px;margin-bottom:20px}
-.streak-cell{width:20px;height:20px;border-radius:3px;background:var(--bg3)}
+.streak-cell{width:20px;height:20px;border-radius:3px;background:rgba(255,255,255,0.07)}
 .streak-cell.done{background:var(--green)}
 /* Tab content */
 .tab-content{display:none}
@@ -106,11 +242,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
 <body>
 
 <div class="header">
-  <h1>ルーティントラッカー</h1>
+  <div class="header-title">Daily</div>
+  <div class="header-sub">Routine Tracker</div>
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('record')">記録</button>
-    <button class="tab" onclick="switchTab('history')">履歴</button>
-    <button class="tab" onclick="switchTab('graph')">グラフ</button>
+    <button class="tab active" onclick="switchTab('record')">Record</button>
+    <button class="tab" onclick="switchTab('history')">History</button>
+    <button class="tab" onclick="switchTab('graph')">Graph</button>
+    <button class="tab" onclick="switchTab('export')">Export</button>
   </div>
 </div>
 
@@ -129,16 +267,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
     </div>
 
     <div class="section">
-      <div class="section-title">習慣チェック</div>
+      <div class="section-title">Habits</div>
       <div class="habit-grid" id="habitGrid"></div>
     </div>
 
     <div class="section">
-      <div class="section-title">詳細記録</div>
+      <div class="section-title">Details</div>
 
-      <!-- 読書 -->
       <div class="detail-card">
-        <div class="detail-header" onclick="toggleCheck('cb_reading','readingCard')">
+        <div class="detail-header" onclick="toggleCheck('cb_reading')">
           <input type="checkbox" id="cb_reading" onchange="updateProgress()">
           <label for="cb_reading">読書</label>
         </div>
@@ -147,9 +284,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
         </div>
       </div>
 
-      <!-- 映像 -->
       <div class="detail-card">
-        <div class="detail-header" onclick="toggleCheck('cb_video','videoCard')">
+        <div class="detail-header" onclick="toggleCheck('cb_video')">
           <input type="checkbox" id="cb_video" onchange="updateProgress()">
           <label for="cb_video">映像</label>
         </div>
@@ -158,9 +294,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
         </div>
       </div>
 
-      <!-- ラン -->
       <div class="detail-card">
-        <div class="detail-header" onclick="toggleCheck('cb_run','runCard')">
+        <div class="detail-header" onclick="toggleCheck('cb_run')">
           <input type="checkbox" id="cb_run" onchange="updateProgress()">
           <label for="cb_run">ラン</label>
         </div>
@@ -170,9 +305,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
         </div>
       </div>
 
-      <!-- 筋トレ -->
       <div class="detail-card">
-        <div class="detail-header" onclick="toggleCheck('cb_muscle','muscleCard')">
+        <div class="detail-header" onclick="toggleCheck('cb_muscle')">
           <input type="checkbox" id="cb_muscle" onchange="updateProgress()">
           <label for="cb_muscle">筋トレ</label>
         </div>
@@ -182,7 +316,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
     </div>
 
     <div class="section">
-      <div class="section-title">睡眠</div>
+      <div class="section-title">Sleep</div>
       <div class="sleep-grid">
         <div class="sleep-item"><label>前日就寝</label><input type="time" id="sleepTime" onchange="calcSleep()"></div>
         <div class="sleep-item"><label>起床時間</label><input type="time" id="wakeTime" onchange="calcSleep()"></div>
@@ -190,7 +324,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
       </div>
     </div>
 
-    <button class="save-btn" onclick="saveDay()">この日を保存</button>
+    <button class="save-btn" onclick="saveDay()">Save</button>
   </div>
 
   <!-- 履歴タブ -->
@@ -201,7 +335,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
   <!-- グラフタブ -->
   <div id="tab-graph" class="tab-content">
     <div class="section">
-      <div class="section-title">ストリーク（過去60日）</div>
+      <div class="section-title">Streak（過去60日）</div>
       <select class="select-input" id="streakSelect" onchange="renderStreak(this.value)">
         <option value="room">部屋そうじ</option>
         <option value="schedule">スケジュール整理</option>
@@ -218,7 +352,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
       <div class="streak-grid" id="streakGrid"></div>
     </div>
     <div class="section">
-      <div class="section-title">グラフ（過去30日）</div>
+      <div class="section-title">Graph（過去30日）</div>
       <select class="select-input" id="chartSelect" onchange="renderChart(this.value)">
         <option value="sleep">睡眠時間（時間）</option>
         <option value="run">ランの距離（km）</option>
@@ -228,9 +362,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
     </div>
   </div>
 
+  <!-- 出力タブ -->
+  <div id="tab-export" class="tab-content">
+    <div class="export-section">
+      <div class="section-title">CSV Export</div>
+      <p>期間を指定してCSVをダウンロードできます。<br>GoogleスプレッドシートやExcelで開けます。</p>
+      <div class="export-range">
+        <div class="export-range-item"><label>開始日</label><input type="date" id="exportFrom"></div>
+        <div class="export-range-item"><label>終了日</label><input type="date" id="exportTo"></div>
+      </div>
+      <div class="record-count" id="recordCount"></div>
+      <button class="export-btn" onclick="exportCSV()">⬇ CSVをダウンロード</button>
+    </div>
+    <div class="export-section">
+      <div class="section-title">Googleスプレッドシートで開く方法</div>
+      <p>① 上のボタンでCSVをダウンロード<br>② Googleスプレッドシートを新規作成<br>③「ファイル」→「インポート」をクリック<br>④ ダウンロードしたCSVファイルを選択<br>⑤「データをインポート」をクリック</p>
+    </div>
+  </div>
+
 </div>
 
-<div class="toast" id="toast">保存しました ✓</div>
+<div class="toast" id="toast">Saved ✓</div>
 
 <script>
 const HABITS=[
@@ -253,8 +405,7 @@ function load(k){try{return JSON.parse(localStorage.getItem('rt_'+k)||'null')}ca
 function save(k,v){localStorage.setItem('rt_'+k,JSON.stringify(v))}
 
 function initHabitGrid(){
-  const g=document.getElementById('habitGrid');
-  g.innerHTML='';
+  const g=document.getElementById('habitGrid');g.innerHTML='';
   HABITS.forEach(h=>{
     const d=document.createElement('div');
     d.className='habit-item';d.id='hi_'+h.key;
@@ -271,29 +422,21 @@ function styleHabit(key){
 }
 
 function toggleCheck(cbId){
-  const cb=document.getElementById(cbId);
-  cb.checked=!cb.checked;
-  updateProgress();
+  const cb=document.getElementById(cbId);cb.checked=!cb.checked;updateProgress();
 }
 
 function updateProgress(){
   const done=ALL_CHECKS.filter(k=>{const cb=document.getElementById('cb_'+k);return cb&&cb.checked}).length;
-  const pct=Math.round(done/ALL_CHECKS.length*100);
-  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('progressFill').style.width=Math.round(done/ALL_CHECKS.length*100)+'%';
   document.getElementById('progressLabel').textContent=done+'/'+ALL_CHECKS.length;
 }
 
-function addMuscle(){
-  muscles.push({name:'',reps:''});
-  renderMuscles();
-}
+function addMuscle(){muscles.push({name:'',reps:''});renderMuscles()}
 
 function renderMuscles(){
-  const el=document.getElementById('muscleList');
-  el.innerHTML='';
+  const el=document.getElementById('muscleList');el.innerHTML='';
   muscles.forEach((m,i)=>{
-    const d=document.createElement('div');
-    d.className='muscle-row';
+    const d=document.createElement('div');d.className='muscle-row';
     d.innerHTML=`<input type="text" placeholder="種目名（例: スクワット）" value="${m.name}" oninput="muscles[${i}].name=this.value"><input type="number" placeholder="回数" min="0" value="${m.reps}" oninput="muscles[${i}].reps=this.value"><button class="del-btn" onclick="muscles.splice(${i},1);renderMuscles()">✕</button>`;
     el.appendChild(d);
   });
@@ -324,16 +467,12 @@ function saveDay(){
     completion:Math.round(done/ALL_CHECKS.length*100)
   };
   HABITS.forEach(h=>{const cb=document.getElementById('cb_'+h.key);data.habits[h.key]=cb&&cb.checked});
-  save(key,data);
-  showToast();
+  save(key,data);showToast();
 }
 
 function loadDay(d){
   const data=load(dateKey(d));
-  HABITS.forEach(h=>{
-    const cb=document.getElementById('cb_'+h.key);
-    if(cb){cb.checked=data?.habits?.[h.key]||false;styleHabit(h.key)}
-  });
+  HABITS.forEach(h=>{const cb=document.getElementById('cb_'+h.key);if(cb){cb.checked=data?.habits?.[h.key]||false;styleHabit(h.key)}});
   document.getElementById('cb_reading').checked=data?.reading?.done||false;
   document.getElementById('cb_video').checked=data?.video?.done||false;
   document.getElementById('cb_run').checked=data?.run?.done||false;
@@ -346,14 +485,12 @@ function loadDay(d){
   document.getElementById('wakeTime').value=data?.sleep?.wake||'';
   document.getElementById('sleepDuration').value=data?.sleep?.duration||'';
   muscles=data?.muscle?.list||[];
-  renderMuscles();
-  updateProgress();
+  renderMuscles();updateProgress();
 }
 
 function changeDate(delta){
   currentDate.setDate(currentDate.getDate()+delta);
-  renderDateHeader();
-  loadDay(currentDate);
+  renderDateHeader();loadDay(currentDate);
 }
 
 function renderDateHeader(){
@@ -368,19 +505,17 @@ function showToast(){
 }
 
 function switchTab(name){
-  document.querySelectorAll('.tab').forEach((t,i)=>t.className='tab'+((['record','history','graph'][i]===name)?' active':''));
+  document.querySelectorAll('.tab').forEach((t,i)=>t.className='tab'+((['record','history','graph','export'][i]===name)?' active':''));
   document.querySelectorAll('.tab-content').forEach(c=>c.className='tab-content');
   document.getElementById('tab-'+name).className='tab-content active';
   if(name==='history')renderHistory();
   if(name==='graph'){renderStreak(document.getElementById('streakSelect').value);renderChart(document.getElementById('chartSelect').value)}
+  if(name==='export')initExport();
 }
 
 function getAllDates(){
   const keys=[];
-  for(let i=0;i<localStorage.length;i++){
-    const k=localStorage.key(i);
-    if(k?.startsWith('rt_'))keys.push(k.replace('rt_',''));
-  }
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k?.startsWith('rt_'))keys.push(k.replace('rt_',''))}
   return keys.sort().reverse();
 }
 
@@ -398,22 +533,19 @@ function renderHistory(){
       if(k==='muscle')return data.muscle?.done;
       return data.habits?.[k];
     });
-    const div=document.createElement('div');
-    div.className='history-item';
+    const div=document.createElement('div');div.className='history-item';
     const extras=[];
     if(data.reading?.done&&data.reading?.book)extras.push('📖 '+data.reading.book);
     if(data.video?.done&&data.video?.name)extras.push('🎬 '+data.video.name);
     if(data.run?.done&&data.run?.km)extras.push('🏃 '+data.run.km+'km');
-    div.innerHTML=`<div class="history-date-row"><div class="history-date">${d}</div><div class="history-pct">${data.completion||0}%完了</div></div><div class="badge-row">${doneKeys.map(k=>`<span class="badge">${LABELS[k]||k}</span>`).join('')}${data.sleep?.duration?`<span class="badge sleep-badge">💤 ${data.sleep.duration}</span>`:''}</div>${extras.length?`<div style="margin-top:8px;font-size:12px;color:var(--text2)">${extras.join(' · ')}</div>`:''}`;
+    div.innerHTML=`<div class="history-date-row"><div class="history-date">${d}</div><div class="history-pct">${data.completion||0}% done</div></div><div class="badge-row">${doneKeys.map(k=>`<span class="badge">${LABELS[k]||k}</span>`).join('')}${data.sleep?.duration?`<span class="badge sleep-badge">💤 ${data.sleep.duration}</span>`:''}</div>${extras.length?`<div style="margin-top:8px;font-size:12px;color:var(--text2)">${extras.join(' · ')}</div>`:''}`;
     el.appendChild(div);
   });
 }
 
 function renderStreak(key){
-  const grid=document.getElementById('streakGrid');
-  grid.innerHTML='';
-  const today=new Date();
-  let streak=0,total=0;
+  const grid=document.getElementById('streakGrid');grid.innerHTML='';
+  const today=new Date();let streak=0,total=0;
   for(let i=59;i>=0;i--){
     const d=new Date(today);d.setDate(today.getDate()-i);
     const data=load(dateKey(d));
@@ -439,35 +571,62 @@ function renderChart(type){
   const labels=dates.map(d=>d.slice(5).replace('-','/'));
   let dataArr=[],label='';
   if(type==='sleep'){
-    label='睡眠時間（時間）';
-    dataArr=dates.map(d=>{
-      const data=load(d);
-      const m=data?.sleep?.duration?.match(/(\d+)時間(\d+)分/);
-      return m?parseFloat((parseInt(m[1])+parseInt(m[2])/60).toFixed(1)):null;
-    });
+    label='睡眠時間（h）';
+    dataArr=dates.map(d=>{const data=load(d);const m=data?.sleep?.duration?.match(/(\d+)時間(\d+)分/);return m?parseFloat((parseInt(m[1])+parseInt(m[2])/60).toFixed(1)):null});
   }else if(type==='run'){
-    label='ランの距離（km）';
+    label='距離（km）';
     dataArr=dates.map(d=>{const data=load(d);return data?.run?.km?parseFloat(data.run.km):null});
   }else{
     label='完了率（%）';
     dataArr=dates.map(d=>{const data=load(d);return data?.completion??null});
   }
   if(chartInst)chartInst.destroy();
-  const dark=matchMedia('(prefers-color-scheme:dark)').matches;
-  const gridColor=dark?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.07)';
-  const tickColor=dark?'#777':'#888';
   chartInst=new Chart(document.getElementById('mainChart'),{
     type:'line',
-    data:{labels,datasets:[{label,data:dataArr,borderColor:'#1a7a4a',backgroundColor:'rgba(26,122,74,0.1)',tension:0.3,pointRadius:4,pointBackgroundColor:'#1a7a4a',spanGaps:true}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},color:tickColor,maxRotation:45},grid:{color:gridColor}},y:{ticks:{font:{size:11},color:tickColor},grid:{color:gridColor}}}}
+    data:{labels,datasets:[{label,data:dataArr,borderColor:'#3ecf8e',backgroundColor:'rgba(62,207,142,0.08)',tension:0.3,pointRadius:4,pointBackgroundColor:'#3ecf8e',spanGaps:true}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
+      x:{ticks:{font:{size:10},color:'#666',maxRotation:45},grid:{color:'rgba(255,255,255,0.05)'}},
+      y:{ticks:{font:{size:11},color:'#666'},grid:{color:'rgba(255,255,255,0.05)'}}
+    }}
   });
 }
 
-// Service Worker登録
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('sw.js').catch(()=>{});
+function initExport(){
+  const dates=getAllDates();
+  if(!dates.length){document.getElementById('recordCount').textContent='記録がまだありません';return}
+  document.getElementById('exportFrom').value=dates[dates.length-1];
+  document.getElementById('exportTo').value=dates[0];
+  document.getElementById('recordCount').textContent=`記録数: ${dates.length}日分`;
+}
+
+function exportCSV(){
+  const from=document.getElementById('exportFrom').value;
+  const to=document.getElementById('exportTo').value;
+  const dates=getAllDates().filter(d=>(!from||d>=from)&&(!to||d<=to)).reverse();
+  if(!dates.length){alert('指定した期間に記録がありません');return}
+  const headers=['日付','部屋そうじ','スケジュール整理','薬（朝）','薬（夜）','経理','スキンケア','読書','読んだ本','映像','見た作品','ラン','距離(km)','タイム','筋トレ','筋トレ内容','就寝時間','起床時間','睡眠時間','完了率(%)'];
+  const rows=[headers];
+  dates.forEach(d=>{
+    const data=load(d);if(!data)return;
+    const bool=v=>v?'1':'0';
+    const muscleText=data.muscle?.list?.map(m=>m.name+(m.reps?'×'+m.reps+'回':'')).join('／')||'';
+    rows.push([d,bool(data.habits?.room),bool(data.habits?.schedule),bool(data.habits?.medicine_am),bool(data.habits?.medicine_pm),bool(data.habits?.accounting),bool(data.habits?.skincare),bool(data.reading?.done),data.reading?.book||'',bool(data.video?.done),data.video?.name||'',bool(data.run?.done),data.run?.km||'',data.run?.time||'',bool(data.muscle?.done),muscleText,data.sleep?.bedtime||'',data.sleep?.wake||'',data.sleep?.duration||'',data.completion||0]);
   });
+  const bom='\uFEFF';
+  const csv=bom+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`routine_${from||'all'}_to_${to||'all'}.csv`;
+  a.click();URL.revokeObjectURL(url);
+  const t=document.getElementById('toast');
+  t.textContent='CSV downloaded ✓';
+  t.className='toast show';
+  setTimeout(()=>{t.className='toast';t.textContent='Saved ✓'},2500);
+}
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
 }
 
 initHabitGrid();
