@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1a7a4a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ルーティン">
+<meta name="description" content="毎日のルーティンを記録・継続するアプリ">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>ルーティントラッカー</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--bg2:#f5f5f5;--bg3:#eaeaea;
+  --text:#111111;--text2:#555555;--text3:#888888;
+  --border:#e0e0e0;--border2:#cccccc;
+  --green:#1a7a4a;--green-light:#e6f4ee;
+  --radius:10px;--radius-sm:6px;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#1a1a1a;--bg2:#252525;--bg3:#2f2f2f;
+    --text:#f0f0f0;--text2:#aaaaaa;--text3:#777777;
+    --border:#333333;--border2:#444444;
+    --green-light:#0d3d25;
+  }
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sans-serif;background:var(--bg);color:var(--text);max-width:600px;margin:0 auto;padding-bottom:80px}
+/* Header */
+.header{padding:16px 20px 0;position:sticky;top:0;background:var(--bg);z-index:10;border-bottom:0.5px solid var(--border)}
+.header h1{font-size:18px;font-weight:600;margin-bottom:12px}
+.tabs{display:flex;gap:0}
+.tab{flex:1;padding:10px 0;font-size:14px;cursor:pointer;border:none;background:none;color:var(--text2);border-bottom:2px solid transparent;transition:all 0.2s}
+.tab.active{color:var(--green);border-bottom-color:var(--green);font-weight:600}
+/* Main content */
+.content{padding:20px}
+/* Date nav */
+.date-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.date-label{font-size:16px;font-weight:600}
+.nav-btn{width:36px;height:36px;border-radius:50%;border:0.5px solid var(--border2);background:var(--bg2);cursor:pointer;font-size:18px;color:var(--text2);display:flex;align-items:center;justify-content:center}
+/* Progress */
+.progress-row{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.progress-bar{flex:1;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:var(--green);border-radius:3px;transition:width 0.3s}
+.progress-label{font-size:13px;color:var(--text2);white-space:nowrap}
+/* Section */
+.section{margin-bottom:24px}
+.section-title{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px}
+/* Habit grid */
+.habit-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.habit-item{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg2);border-radius:var(--radius-sm);cursor:pointer;border:0.5px solid var(--border);transition:all 0.15s;-webkit-tap-highlight-color:transparent}
+.habit-item.done{background:var(--green-light);border-color:var(--green)}
+.habit-item input[type=checkbox]{accent-color:var(--green);width:18px;height:18px;flex-shrink:0}
+.habit-item label{font-size:13px;cursor:pointer;line-height:1.3}
+/* Detail card */
+.detail-card{background:var(--bg2);border-radius:var(--radius);border:0.5px solid var(--border);padding:14px;margin-bottom:8px}
+.detail-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer}
+.detail-header input[type=checkbox]{accent-color:var(--green);width:18px;height:18px;flex-shrink:0}
+.detail-header label{font-size:14px;font-weight:500;cursor:pointer}
+.detail-fields{display:flex;flex-direction:column;gap:8px}
+.field-row{display:flex;align-items:center;gap:8px}
+.field-row label{font-size:13px;color:var(--text2);min-width:72px}
+.field-row input{flex:1;padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:14px;font-family:inherit}
+.field-row input:focus{outline:none;border-color:var(--green)}
+/* Sleep */
+.sleep-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.sleep-item{display:flex;flex-direction:column;gap:4px}
+.sleep-item label{font-size:12px;color:var(--text3)}
+.sleep-item input{padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:14px;font-family:inherit}
+.sleep-item input:focus{outline:none;border-color:var(--green)}
+/* Muscle */
+.muscle-row{display:grid;grid-template-columns:1fr 80px 36px;gap:6px;margin-bottom:6px;align-items:center}
+.muscle-row input{padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:13px;font-family:inherit}
+.add-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;border:0.5px dashed var(--border2);border-radius:var(--radius-sm);background:none;color:var(--text2);font-size:13px;cursor:pointer;width:100%;margin-top:4px}
+.del-btn{width:36px;height:36px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--bg);color:var(--text2);cursor:pointer;font-size:16px}
+/* Save button */
+.save-btn{width:100%;padding:14px;border-radius:var(--radius);border:none;background:var(--green);color:#fff;font-size:16px;font-weight:600;cursor:pointer;margin-top:8px;font-family:inherit}
+.save-btn:active{opacity:0.85}
+/* Toast */
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 20px;border-radius:100px;font-size:14px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:100;white-space:nowrap}
+.toast.show{opacity:1}
+/* History */
+.history-item{background:var(--bg2);border-radius:var(--radius);border:0.5px solid var(--border);padding:14px;margin-bottom:8px}
+.history-date-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.history-date{font-size:14px;font-weight:600}
+.history-pct{font-size:12px;color:var(--text2)}
+.badge-row{display:flex;flex-wrap:wrap;gap:5px}
+.badge{font-size:11px;padding:3px 9px;border-radius:100px;background:var(--green-light);color:var(--green);font-weight:500}
+.badge.sleep-badge{background:var(--bg3);color:var(--text2)}
+/* Graph */
+.chart-wrap{position:relative;width:100%;height:220px;margin-bottom:20px}
+.select-input{width:100%;padding:10px 12px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:14px;font-family:inherit;margin-bottom:16px}
+.streak-label{font-size:13px;color:var(--text2);margin-bottom:8px}
+.streak-grid{display:grid;grid-template-columns:repeat(auto-fill,20px);gap:3px;margin-bottom:20px}
+.streak-cell{width:20px;height:20px;border-radius:3px;background:var(--bg3)}
+.streak-cell.done{background:var(--green)}
+/* Tab content */
+.tab-content{display:none}
+.tab-content.active{display:block}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>ルーティントラッカー</h1>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('record')">記録</button>
+    <button class="tab" onclick="switchTab('history')">履歴</button>
+    <button class="tab" onclick="switchTab('graph')">グラフ</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- 記録タブ -->
+  <div id="tab-record" class="tab-content active">
+    <div class="date-nav">
+      <button class="nav-btn" onclick="changeDate(-1)">‹</button>
+      <div class="date-label" id="dateDisplay"></div>
+      <button class="nav-btn" onclick="changeDate(1)">›</button>
+    </div>
+    <div class="progress-row">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-label" id="progressLabel">0/10</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">習慣チェック</div>
+      <div class="habit-grid" id="habitGrid"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">詳細記録</div>
+
+      <!-- 読書 -->
+      <div class="detail-card">
+        <div class="detail-header" onclick="toggleCheck('cb_reading','readingCard')">
+          <input type="checkbox" id="cb_reading" onchange="updateProgress()">
+          <label for="cb_reading">読書</label>
+        </div>
+        <div class="detail-fields">
+          <div class="field-row"><label>本の名前</label><input type="text" id="bookName" placeholder="例: 習慣の力"></div>
+        </div>
+      </div>
+
+      <!-- 映像 -->
+      <div class="detail-card">
+        <div class="detail-header" onclick="toggleCheck('cb_video','videoCard')">
+          <input type="checkbox" id="cb_video" onchange="updateProgress()">
+          <label for="cb_video">映像</label>
+        </div>
+        <div class="detail-fields">
+          <div class="field-row"><label>作品名</label><input type="text" id="videoName" placeholder="例: オッペンハイマー"></div>
+        </div>
+      </div>
+
+      <!-- ラン -->
+      <div class="detail-card">
+        <div class="detail-header" onclick="toggleCheck('cb_run','runCard')">
+          <input type="checkbox" id="cb_run" onchange="updateProgress()">
+          <label for="cb_run">ラン</label>
+        </div>
+        <div class="detail-fields">
+          <div class="field-row"><label>距離 (km)</label><input type="number" id="runKm" placeholder="0.0" step="0.1" min="0"></div>
+          <div class="field-row"><label>タイム</label><input type="text" id="runTime" placeholder="例: 32:15"></div>
+        </div>
+      </div>
+
+      <!-- 筋トレ -->
+      <div class="detail-card">
+        <div class="detail-header" onclick="toggleCheck('cb_muscle','muscleCard')">
+          <input type="checkbox" id="cb_muscle" onchange="updateProgress()">
+          <label for="cb_muscle">筋トレ</label>
+        </div>
+        <div id="muscleList"></div>
+        <button class="add-btn" onclick="addMuscle()">＋ 種目を追加</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">睡眠</div>
+      <div class="sleep-grid">
+        <div class="sleep-item"><label>前日就寝</label><input type="time" id="sleepTime" onchange="calcSleep()"></div>
+        <div class="sleep-item"><label>起床時間</label><input type="time" id="wakeTime" onchange="calcSleep()"></div>
+        <div class="sleep-item"><label>睡眠時間</label><input type="text" id="sleepDuration" placeholder="自動計算" readonly></div>
+      </div>
+    </div>
+
+    <button class="save-btn" onclick="saveDay()">この日を保存</button>
+  </div>
+
+  <!-- 履歴タブ -->
+  <div id="tab-history" class="tab-content">
+    <div id="historyContent"></div>
+  </div>
+
+  <!-- グラフタブ -->
+  <div id="tab-graph" class="tab-content">
+    <div class="section">
+      <div class="section-title">ストリーク（過去60日）</div>
+      <select class="select-input" id="streakSelect" onchange="renderStreak(this.value)">
+        <option value="room">部屋そうじ</option>
+        <option value="schedule">スケジュール整理</option>
+        <option value="medicine_am">薬（朝）</option>
+        <option value="medicine_pm">薬（夜）</option>
+        <option value="accounting">経理</option>
+        <option value="run">ラン</option>
+        <option value="muscle">筋トレ</option>
+        <option value="skincare">スキンケア</option>
+        <option value="reading">読書</option>
+        <option value="video">映像</option>
+      </select>
+      <div class="streak-label" id="streakLabel"></div>
+      <div class="streak-grid" id="streakGrid"></div>
+    </div>
+    <div class="section">
+      <div class="section-title">グラフ（過去30日）</div>
+      <select class="select-input" id="chartSelect" onchange="renderChart(this.value)">
+        <option value="sleep">睡眠時間（時間）</option>
+        <option value="run">ランの距離（km）</option>
+        <option value="completion">完了率（%）</option>
+      </select>
+      <div class="chart-wrap"><canvas id="mainChart" role="img" aria-label="ルーティンデータのグラフ">データなし</canvas></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">保存しました ✓</div>
+
+<script>
+const HABITS=[
+  {key:'room',label:'部屋そうじ'},
+  {key:'schedule',label:'スケジュール整理'},
+  {key:'medicine_am',label:'薬（朝）'},
+  {key:'medicine_pm',label:'薬（夜）'},
+  {key:'accounting',label:'経理'},
+  {key:'skincare',label:'スキンケア'},
+];
+const ALL_CHECKS=['room','schedule','medicine_am','medicine_pm','accounting','skincare','reading','video','run','muscle'];
+const LABELS={room:'部屋そうじ',schedule:'スケジュール整理',medicine_am:'薬（朝）',medicine_pm:'薬（夜）',accounting:'経理',skincare:'スキンケア',reading:'読書',video:'映像',run:'ラン',muscle:'筋トレ'};
+
+let currentDate=new Date();
+let muscles=[];
+let chartInst=null;
+
+function dateKey(d){return d.toISOString().slice(0,10)}
+function load(k){try{return JSON.parse(localStorage.getItem('rt_'+k)||'null')}catch{return null}}
+function save(k,v){localStorage.setItem('rt_'+k,JSON.stringify(v))}
+
+function initHabitGrid(){
+  const g=document.getElementById('habitGrid');
+  g.innerHTML='';
+  HABITS.forEach(h=>{
+    const d=document.createElement('div');
+    d.className='habit-item';d.id='hi_'+h.key;
+    d.onclick=()=>{const cb=document.getElementById('cb_'+h.key);cb.checked=!cb.checked;styleHabit(h.key);updateProgress()};
+    d.innerHTML=`<input type="checkbox" id="cb_${h.key}" onchange="styleHabit('${h.key}');updateProgress()"><label for="cb_${h.key}">${h.label}</label>`;
+    g.appendChild(d);
+  });
+}
+
+function styleHabit(key){
+  const cb=document.getElementById('cb_'+key);
+  const el=document.getElementById('hi_'+key);
+  if(el)el.className='habit-item'+(cb&&cb.checked?' done':'');
+}
+
+function toggleCheck(cbId){
+  const cb=document.getElementById(cbId);
+  cb.checked=!cb.checked;
+  updateProgress();
+}
+
+function updateProgress(){
+  const done=ALL_CHECKS.filter(k=>{const cb=document.getElementById('cb_'+k);return cb&&cb.checked}).length;
+  const pct=Math.round(done/ALL_CHECKS.length*100);
+  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('progressLabel').textContent=done+'/'+ALL_CHECKS.length;
+}
+
+function addMuscle(){
+  muscles.push({name:'',reps:''});
+  renderMuscles();
+}
+
+function renderMuscles(){
+  const el=document.getElementById('muscleList');
+  el.innerHTML='';
+  muscles.forEach((m,i)=>{
+    const d=document.createElement('div');
+    d.className='muscle-row';
+    d.innerHTML=`<input type="text" placeholder="種目名（例: スクワット）" value="${m.name}" oninput="muscles[${i}].name=this.value"><input type="number" placeholder="回数" min="0" value="${m.reps}" oninput="muscles[${i}].reps=this.value"><button class="del-btn" onclick="muscles.splice(${i},1);renderMuscles()">✕</button>`;
+    el.appendChild(d);
+  });
+}
+
+function calcSleep(){
+  const s=document.getElementById('sleepTime').value;
+  const w=document.getElementById('wakeTime').value;
+  if(!s||!w)return;
+  const[sh,sm]=s.split(':').map(Number);
+  const[wh,wm]=w.split(':').map(Number);
+  let mins=(wh*60+wm)-(sh*60+sm);
+  if(mins<0)mins+=1440;
+  const h=Math.floor(mins/60),m=mins%60;
+  document.getElementById('sleepDuration').value=h+'時間'+m+'分';
+}
+
+function saveDay(){
+  const key=dateKey(currentDate);
+  const done=ALL_CHECKS.filter(k=>{const cb=document.getElementById('cb_'+k);return cb&&cb.checked}).length;
+  const data={
+    habits:{},
+    reading:{done:document.getElementById('cb_reading').checked,book:document.getElementById('bookName').value},
+    video:{done:document.getElementById('cb_video').checked,name:document.getElementById('videoName').value},
+    run:{done:document.getElementById('cb_run').checked,km:document.getElementById('runKm').value,time:document.getElementById('runTime').value},
+    muscle:{done:document.getElementById('cb_muscle').checked,list:muscles.slice()},
+    sleep:{bedtime:document.getElementById('sleepTime').value,wake:document.getElementById('wakeTime').value,duration:document.getElementById('sleepDuration').value},
+    completion:Math.round(done/ALL_CHECKS.length*100)
+  };
+  HABITS.forEach(h=>{const cb=document.getElementById('cb_'+h.key);data.habits[h.key]=cb&&cb.checked});
+  save(key,data);
+  showToast();
+}
+
+function loadDay(d){
+  const data=load(dateKey(d));
+  HABITS.forEach(h=>{
+    const cb=document.getElementById('cb_'+h.key);
+    if(cb){cb.checked=data?.habits?.[h.key]||false;styleHabit(h.key)}
+  });
+  document.getElementById('cb_reading').checked=data?.reading?.done||false;
+  document.getElementById('cb_video').checked=data?.video?.done||false;
+  document.getElementById('cb_run').checked=data?.run?.done||false;
+  document.getElementById('cb_muscle').checked=data?.muscle?.done||false;
+  document.getElementById('bookName').value=data?.reading?.book||'';
+  document.getElementById('videoName').value=data?.video?.name||'';
+  document.getElementById('runKm').value=data?.run?.km||'';
+  document.getElementById('runTime').value=data?.run?.time||'';
+  document.getElementById('sleepTime').value=data?.sleep?.bedtime||'';
+  document.getElementById('wakeTime').value=data?.sleep?.wake||'';
+  document.getElementById('sleepDuration').value=data?.sleep?.duration||'';
+  muscles=data?.muscle?.list||[];
+  renderMuscles();
+  updateProgress();
+}
+
+function changeDate(delta){
+  currentDate.setDate(currentDate.getDate()+delta);
+  renderDateHeader();
+  loadDay(currentDate);
+}
+
+function renderDateHeader(){
+  const opts={year:'numeric',month:'long',day:'numeric',weekday:'short'};
+  document.getElementById('dateDisplay').textContent=currentDate.toLocaleDateString('ja-JP',opts);
+}
+
+function showToast(){
+  const t=document.getElementById('toast');
+  t.className='toast show';
+  setTimeout(()=>t.className='toast',2200);
+}
+
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.className='tab'+((['record','history','graph'][i]===name)?' active':''));
+  document.querySelectorAll('.tab-content').forEach(c=>c.className='tab-content');
+  document.getElementById('tab-'+name).className='tab-content active';
+  if(name==='history')renderHistory();
+  if(name==='graph'){renderStreak(document.getElementById('streakSelect').value);renderChart(document.getElementById('chartSelect').value)}
+}
+
+function getAllDates(){
+  const keys=[];
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k?.startsWith('rt_'))keys.push(k.replace('rt_',''));
+  }
+  return keys.sort().reverse();
+}
+
+function renderHistory(){
+  const el=document.getElementById('historyContent');
+  const dates=getAllDates();
+  if(!dates.length){el.innerHTML='<p style="color:var(--text2);font-size:14px;padding:20px 0">まだ記録がありません</p>';return}
+  el.innerHTML='';
+  dates.slice(0,60).forEach(d=>{
+    const data=load(d);if(!data)return;
+    const doneKeys=ALL_CHECKS.filter(k=>{
+      if(k==='reading')return data.reading?.done;
+      if(k==='video')return data.video?.done;
+      if(k==='run')return data.run?.done;
+      if(k==='muscle')return data.muscle?.done;
+      return data.habits?.[k];
+    });
+    const div=document.createElement('div');
+    div.className='history-item';
+    const extras=[];
+    if(data.reading?.done&&data.reading?.book)extras.push('📖 '+data.reading.book);
+    if(data.video?.done&&data.video?.name)extras.push('🎬 '+data.video.name);
+    if(data.run?.done&&data.run?.km)extras.push('🏃 '+data.run.km+'km');
+    div.innerHTML=`<div class="history-date-row"><div class="history-date">${d}</div><div class="history-pct">${data.completion||0}%完了</div></div><div class="badge-row">${doneKeys.map(k=>`<span class="badge">${LABELS[k]||k}</span>`).join('')}${data.sleep?.duration?`<span class="badge sleep-badge">💤 ${data.sleep.duration}</span>`:''}</div>${extras.length?`<div style="margin-top:8px;font-size:12px;color:var(--text2)">${extras.join(' · ')}</div>`:''}`;
+    el.appendChild(div);
+  });
+}
+
+function renderStreak(key){
+  const grid=document.getElementById('streakGrid');
+  grid.innerHTML='';
+  const today=new Date();
+  let streak=0,total=0;
+  for(let i=59;i>=0;i--){
+    const d=new Date(today);d.setDate(today.getDate()-i);
+    const data=load(dateKey(d));
+    let done=false;
+    if(data){
+      if(key==='reading')done=data.reading?.done;
+      else if(key==='video')done=data.video?.done;
+      else if(key==='run')done=data.run?.done;
+      else if(key==='muscle')done=data.muscle?.done;
+      else done=data.habits?.[key];
+    }
+    if(done){total++;if(i===0||i<streak+1)streak++}
+    const cell=document.createElement('div');
+    cell.className='streak-cell'+(done?' done':'');
+    cell.title=dateKey(d)+(done?' ✓':'');
+    grid.appendChild(cell);
+  }
+  document.getElementById('streakLabel').textContent=`連続: ${streak}日 / 過去60日: ${total}日達成`;
+}
+
+function renderChart(type){
+  const dates=getAllDates().slice(0,30).reverse();
+  const labels=dates.map(d=>d.slice(5).replace('-','/'));
+  let dataArr=[],label='';
+  if(type==='sleep'){
+    label='睡眠時間（時間）';
+    dataArr=dates.map(d=>{
+      const data=load(d);
+      const m=data?.sleep?.duration?.match(/(\d+)時間(\d+)分/);
+      return m?parseFloat((parseInt(m[1])+parseInt(m[2])/60).toFixed(1)):null;
+    });
+  }else if(type==='run'){
+    label='ランの距離（km）';
+    dataArr=dates.map(d=>{const data=load(d);return data?.run?.km?parseFloat(data.run.km):null});
+  }else{
+    label='完了率（%）';
+    dataArr=dates.map(d=>{const data=load(d);return data?.completion??null});
+  }
+  if(chartInst)chartInst.destroy();
+  const dark=matchMedia('(prefers-color-scheme:dark)').matches;
+  const gridColor=dark?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.07)';
+  const tickColor=dark?'#777':'#888';
+  chartInst=new Chart(document.getElementById('mainChart'),{
+    type:'line',
+    data:{labels,datasets:[{label,data:dataArr,borderColor:'#1a7a4a',backgroundColor:'rgba(26,122,74,0.1)',tension:0.3,pointRadius:4,pointBackgroundColor:'#1a7a4a',spanGaps:true}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},color:tickColor,maxRotation:45},grid:{color:gridColor}},y:{ticks:{font:{size:11},color:tickColor},grid:{color:gridColor}}}}
+  });
+}
+
+// Service Worker登録
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+
+initHabitGrid();
+renderDateHeader();
+loadDay(currentDate);
+</script>
+</body>
+</html>
