@@ -1,4 +1,4 @@
-const CACHE_NAME = 'routine-tracker-v1';
+const CACHE_NAME = 'routine-tracker-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -24,8 +24,6 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      return cached || fetch(event.request).catch(() => caches.match('./index.html'));
-    })
+    fetch(event.request).catch(() => caches.match(event.request))
   );
 });
