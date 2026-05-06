@@ -15,22 +15,13 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg-from:#a8c8f0;
-  --bg-to:#e8a0c8;
-  --bg-card:rgba(255,255,255,0.25);
-  --bg-card-hover:rgba(255,255,255,0.35);
-  --bg-input:rgba(255,255,255,0.4);
-  --bg-input-focus:rgba(255,255,255,0.6);
-  --text:#2a2040;
-  --text2:#5a4870;
-  --text3:#8a78a0;
-  --border:rgba(255,255,255,0.4);
-  --border2:rgba(255,255,255,0.6);
-  --accent:#c060a0;
-  --accent-light:rgba(192,96,160,0.15);
-  --accent-border:rgba(192,96,160,0.4);
-  --radius:14px;
-  --radius-sm:9px;
+  --bg-from:#a8c8f0;--bg-to:#e8a0c8;
+  --bg-card:rgba(255,255,255,0.25);--bg-card-hover:rgba(255,255,255,0.35);
+  --bg-input:rgba(255,255,255,0.4);--bg-input-focus:rgba(255,255,255,0.6);
+  --text:#2a2040;--text2:#5a4870;--text3:#8a78a0;
+  --border:rgba(255,255,255,0.4);--border2:rgba(255,255,255,0.6);
+  --accent:#c060a0;--accent-light:rgba(192,96,160,0.15);--accent-border:rgba(192,96,160,0.4);
+  --radius:14px;--radius-sm:9px;
 }
 html{min-height:100%}
 body{
@@ -38,31 +29,16 @@ body{
   font-size:16.5px;
   background:linear-gradient(170deg,var(--bg-from) 0%,var(--bg-to) 100%);
   background-attachment:fixed;
-  color:var(--text);
-  max-width:600px;margin:0 auto;
-  padding-bottom:80px;min-height:100vh;
-  overflow-y:scroll;
+  color:var(--text);max-width:600px;margin:0 auto;
+  padding-bottom:80px;min-height:100vh;overflow-y:scroll;
 }
-
-/* プルトゥリフレッシュ */
 #ptr-indicator{
-  position:fixed;top:0;left:0;right:0;
-  display:flex;align-items:center;justify-content:center;
-  height:0;overflow:hidden;
-  background:rgba(255,255,255,0.3);
-  transition:height 0.15s;z-index:200;
-  font-size:13px;color:var(--accent);gap:8px;
+  position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-content:center;
+  height:0;overflow:hidden;background:rgba(255,255,255,0.3);transition:height 0.15s;
+  z-index:200;font-size:13px;color:var(--accent);gap:8px;
 }
-#ptr-spinner{
-  width:18px;height:18px;
-  border:2px solid var(--accent-border);
-  border-top-color:var(--accent);
-  border-radius:50%;
-  animation:spin 0.8s linear infinite;
-  display:none;flex-shrink:0;
-}
+#ptr-spinner{width:18px;height:18px;border:2px solid var(--accent-border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;display:none;flex-shrink:0;}
 @keyframes spin{to{transform:rotate(360deg)}}
-
 .header{
   padding:20px 20px 0;position:sticky;top:0;
   background:linear-gradient(170deg,rgba(168,200,240,0.92) 0%,rgba(220,160,200,0.92) 100%);
@@ -75,7 +51,6 @@ body{
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex-shrink:0;padding:10px 14px;font-size:13px;cursor:pointer;border:none;background:none;color:var(--text3);border-bottom:2px solid transparent;transition:all 0.2s;white-space:nowrap;}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
-
 .content{padding:20px}
 .date-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .date-label{font-size:16px;font-weight:600;color:var(--text)}
@@ -87,13 +62,11 @@ body{
 .progress-label{font-size:13.5px;color:var(--text2);white-space:nowrap}
 .section{margin-bottom:24px}
 .section-title{font-size:10.5px;font-weight:700;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;}
-
 .habit-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .habit-item{display:flex;align-items:center;gap:8px;padding:12px 10px;background:var(--bg-card);border-radius:var(--radius-sm);cursor:pointer;border:0.5px solid var(--border);transition:all 0.15s;-webkit-tap-highlight-color:transparent;}
 .habit-item.done{background:rgba(192,96,160,0.2);border-color:var(--accent-border)}
 .habit-item input[type=checkbox]{accent-color:var(--accent);width:17px;height:17px;flex-shrink:0}
 .habit-item label{font-size:13px;cursor:pointer;line-height:1.3;color:var(--text);flex:1}
-
 .detail-card{background:var(--bg-card);border-radius:var(--radius);border:0.5px solid var(--border);padding:14px;margin-bottom:8px;}
 .detail-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer}
 .detail-header input[type=checkbox]{accent-color:var(--accent);width:17px;height:17px;flex-shrink:0}
@@ -103,30 +76,19 @@ body{
 .field-row label{font-size:13.5px;color:var(--text2);min-width:76px}
 .field-row input{flex:1;padding:9px 10px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg-input);color:var(--text);font-size:16px;font-family:inherit;}
 .field-row input:focus{outline:none;border-color:var(--accent);background:var(--bg-input-focus)}
-
 .sleep-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 .sleep-item{display:flex;flex-direction:column;gap:4px}
 .sleep-item label{font-size:12.5px;color:var(--text3)}
 .sleep-item input{padding:9px 8px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg-input);color:var(--text);font-size:16px;font-family:inherit;}
 .sleep-item input:focus{outline:none;border-color:var(--accent)}
-
 .muscle-row{display:grid;grid-template-columns:1fr 80px 36px;gap:6px;margin-bottom:6px;align-items:center}
 .muscle-row input{padding:9px 10px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg-input);color:var(--text);font-size:16px;font-family:inherit;}
 .add-muscle-btn{display:flex;align-items:center;gap:6px;padding:9px 12px;border:0.5px dashed var(--border2);border-radius:var(--radius-sm);background:none;color:var(--text2);font-size:13.5px;cursor:pointer;width:100%;margin-top:4px;}
 .del-btn{width:36px;height:36px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:rgba(255,255,255,0.2);color:var(--text2);cursor:pointer;font-size:16px;}
-
-/* Saveボタン */
-.save-btn{
-  width:100%;padding:15px;border-radius:var(--radius);border:none;
-  background:var(--accent);color:#fff;
-  font-size:16.5px;font-weight:700;cursor:pointer;margin-top:8px;
-  font-family:inherit;letter-spacing:0.02em;
-  transition:background 0.3s, transform 0.1s;
-}
+.save-btn{width:100%;padding:15px;border-radius:var(--radius);border:none;background:var(--accent);color:#fff;font-size:16.5px;font-weight:700;cursor:pointer;margin-top:8px;font-family:inherit;letter-spacing:0.02em;transition:background 0.3s,transform 0.1s;}
 .save-btn:active{transform:scale(0.98)}
-.save-btn.saved{background:#2eaa6e;color:#fff;}
-
-/* Settings */
+.save-btn.saved{background:#2eaa6e;}
+.autosave-indicator{font-size:11.5px;color:var(--text3);text-align:right;margin-top:6px;height:16px;transition:opacity 0.3s;}
 .settings-section{background:var(--bg-card);border-radius:var(--radius);border:0.5px solid var(--border);padding:16px;margin-bottom:20px;}
 .settings-section-title{font-size:10.5px;font-weight:700;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;}
 .settings-item{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:0.5px solid rgba(255,255,255,0.2);}
@@ -141,7 +103,6 @@ body{
 .add-item-row input:focus{outline:none;border-color:var(--accent)}
 .add-item-btn{padding:9px 16px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#fff;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;}
 .settings-note{font-size:12px;color:var(--text3);margin-top:8px;line-height:1.6}
-
 .export-section{background:var(--bg-card);border-radius:var(--radius);border:0.5px solid var(--border);padding:16px;margin-bottom:16px;}
 .export-section p{font-size:13.5px;color:var(--text2);margin-bottom:12px;line-height:1.8}
 .export-range{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
@@ -150,14 +111,12 @@ body{
 .export-range-item input{padding:9px 10px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg-input);color:var(--text);font-size:16px;font-family:inherit;}
 .record-count{font-size:13.5px;color:var(--text2);margin-bottom:12px}
 .export-btn{width:100%;padding:14px;border-radius:var(--radius);border:0.5px solid var(--accent-border);background:var(--accent-light);color:var(--accent);font-size:15.5px;font-weight:600;cursor:pointer;font-family:inherit;}
-
 .chart-wrap{position:relative;width:100%;height:220px;margin-bottom:20px}
 .select-input{width:100%;padding:10px 12px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg-input);color:var(--text);font-size:14.5px;font-family:inherit;margin-bottom:16px;}
 .streak-label{font-size:13.5px;color:var(--text2);margin-bottom:8px}
 .streak-grid{display:grid;grid-template-columns:repeat(auto-fill,20px);gap:3px;margin-bottom:20px}
 .streak-cell{width:20px;height:20px;border-radius:3px;background:rgba(255,255,255,0.2)}
 .streak-cell.done{background:var(--accent)}
-
 .history-item{background:var(--bg-card);border-radius:var(--radius);border:0.5px solid var(--border);padding:14px;margin-bottom:8px;}
 .history-date-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .history-date{font-size:14.5px;font-weight:600;color:var(--text)}
@@ -165,7 +124,6 @@ body{
 .badge-row{display:flex;flex-wrap:wrap;gap:5px}
 .badge{font-size:11.5px;padding:3px 9px;border-radius:100px;background:rgba(192,96,160,0.15);color:var(--accent);font-weight:500;border:0.5px solid var(--accent-border);}
 .badge.sleep-badge{background:rgba(255,255,255,0.2);color:var(--text2);border-color:var(--border)}
-
 .tab-content{display:none}
 .tab-content.active{display:block}
 </style>
@@ -212,12 +170,13 @@ body{
     <div class="section">
       <div class="section-title">Sleep</div>
       <div class="sleep-grid">
-        <div class="sleep-item"><label>前日就寝</label><input type="time" id="sleepTime" onchange="calcSleep()"></div>
-        <div class="sleep-item"><label>起床時間</label><input type="time" id="wakeTime" onchange="calcSleep()"></div>
+        <div class="sleep-item"><label>前日就寝</label><input type="time" id="sleepTime" onchange="calcSleep();autoSave()"></div>
+        <div class="sleep-item"><label>起床時間</label><input type="time" id="wakeTime" onchange="calcSleep();autoSave()"></div>
         <div class="sleep-item"><label>睡眠時間</label><input type="text" id="sleepDuration" placeholder="自動計算" readonly></div>
       </div>
     </div>
     <button class="save-btn" id="saveBtn" onclick="saveDay()">Save</button>
+    <div class="autosave-indicator" id="autosaveIndicator"></div>
   </div>
 
   <div id="tab-history" class="tab-content">
@@ -238,7 +197,7 @@ body{
         <option value="run">ランの距離（km）</option>
         <option value="completion">完了率（%）</option>
       </select>
-      <div class="chart-wrap"><canvas id="mainChart" role="img" aria-label="ルーティンデータのグラフ">データなし</canvas></div>
+      <div class="chart-wrap"><canvas id="mainChart" role="img" aria-label="グラフ">データなし</canvas></div>
     </div>
   </div>
 
@@ -284,12 +243,9 @@ body{
 
 <script>
 const DEFAULT_HABITS=[
-  {key:'room',label:'部屋そうじ'},
-  {key:'schedule',label:'スケジュール整理'},
-  {key:'medicine_am',label:'薬（朝）'},
-  {key:'medicine_pm',label:'薬（夜）'},
-  {key:'accounting',label:'経理'},
-  {key:'skincare',label:'スキンケア'},
+  {key:'room',label:'部屋そうじ'},{key:'schedule',label:'スケジュール整理'},
+  {key:'medicine_am',label:'薬（朝）'},{key:'medicine_pm',label:'薬（夜）'},
+  {key:'accounting',label:'経理'},{key:'skincare',label:'スキンケア'},
 ];
 const DEFAULT_DETAILS=[
   {key:'reading',label:'読書',fieldLabel:'本の名前',fieldPlaceholder:'例: 習慣の力'},
@@ -310,6 +266,7 @@ let muscles=[];
 let chartInst=null;
 let renamingHabitKey=null;
 let renamingDetailKey=null;
+let autoSaveTimer=null;
 
 function dateKey(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function localToday(){const n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate())}
@@ -330,8 +287,7 @@ document.addEventListener('touchmove',e=>{
   }
 },{passive:true});
 document.addEventListener('touchend',()=>{
-  if(!ptrActive)return;
-  ptrActive=false;
+  if(!ptrActive)return;ptrActive=false;
   const ind=document.getElementById('ptr-indicator');
   const h=parseFloat(ind.style.height)||0;
   if(h>=PTR_THRESHOLD){
@@ -343,102 +299,24 @@ document.addEventListener('touchend',()=>{
   ptrStartY=0;
 });
 
-function renderHabitGrid(){
-  const habits=getHabits();
-  const g=document.getElementById('habitGrid');g.innerHTML='';
-  habits.forEach(h=>{
-    const d=document.createElement('div');
-    d.className='habit-item';d.id='hi_'+h.key;
-    d.onclick=()=>{const cb=document.getElementById('cb_'+h.key);cb.checked=!cb.checked;styleHabit(h.key);updateProgress()};
-    d.innerHTML=`<input type="checkbox" id="cb_${h.key}" onchange="styleHabit('${h.key}');updateProgress()"><label for="cb_${h.key}">${h.label}</label>`;
-    g.appendChild(d);
-  });
-}
-function styleHabit(key){
-  const cb=document.getElementById('cb_'+key);
-  const el=document.getElementById('hi_'+key);
-  if(el)el.className='habit-item'+(cb&&cb.checked?' done':'');
+// ===== 自動保存 =====
+function autoSave(){
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer=setTimeout(()=>{
+    commitSave();
+    showAutoSaveIndicator();
+  },300);
 }
 
-function renderDetailCards(){
-  const details=getDetails();
-  const container=document.getElementById('detailCards');container.innerHTML='';
-  details.forEach(d=>{
-    const card=document.createElement('div');card.className='detail-card';
-    let fieldsHTML='';
-    if(d.isMuscle){
-      fieldsHTML=`<div id="muscleList_${d.key}"></div><button class="add-muscle-btn" onclick="addMuscle('${d.key}')">＋ 種目を追加</button>`;
-    }else if(d.extra){
-      fieldsHTML=`<div class="detail-fields">
-        <div class="field-row"><label>${d.fieldLabel}</label><input type="${d.fieldType||'text'}" id="df_${d.key}_main" placeholder="${d.fieldPlaceholder}" step="0.1" min="0"></div>
-        <div class="field-row"><label>タイム</label><input type="text" id="df_${d.key}_time" placeholder="例: 32:15"></div>
-      </div>`;
-    }else if(d.fieldLabel){
-      fieldsHTML=`<div class="detail-fields"><div class="field-row"><label>${d.fieldLabel}</label><input type="text" id="df_${d.key}_main" placeholder="${d.fieldPlaceholder||''}"></div></div>`;
-    }
-    card.innerHTML=`
-      <div class="detail-header" onclick="toggleCheck('cb_d_${d.key}')">
-        <input type="checkbox" id="cb_d_${d.key}" onchange="updateProgress()">
-        <label for="cb_d_${d.key}">${d.label}</label>
-      </div>${fieldsHTML}`;
-    container.appendChild(card);
-    if(d.isMuscle)renderMuscles(d.key);
-  });
+function showAutoSaveIndicator(){
+  const el=document.getElementById('autosaveIndicator');
+  if(!el)return;
+  el.textContent='自動保存しました';
+  el.style.opacity='1';
+  setTimeout(()=>el.style.opacity='0',1500);
 }
 
-function addMuscle(key){muscles.push({detailKey:key,name:'',reps:''});renderMuscles(key)}
-function renderMuscles(key){
-  const el=document.getElementById('muscleList_'+key);if(!el)return;
-  const myMuscles=muscles.filter(m=>m.detailKey===key);
-  el.innerHTML='';
-  myMuscles.forEach(m=>{
-    const globalIdx=muscles.indexOf(m);
-    const d=document.createElement('div');d.className='muscle-row';
-    d.innerHTML=`<input type="text" placeholder="種目名（例: スクワット）" value="${m.name}" oninput="muscles[${globalIdx}].name=this.value"><input type="number" placeholder="回数" min="0" value="${m.reps}" oninput="muscles[${globalIdx}].reps=this.value"><button class="del-btn" onclick="muscles.splice(${globalIdx},1);renderMuscles('${key}')">✕</button>`;
-    el.appendChild(d);
-  });
-}
-
-function toggleCheck(cbId){const cb=document.getElementById(cbId);if(cb){cb.checked=!cb.checked;updateProgress()}}
-
-function updateProgress(){
-  const habits=getHabits();
-  const details=getDetails();
-  const total=habits.length+details.length;
-  let done=0;
-  habits.forEach(h=>{const cb=document.getElementById('cb_'+h.key);if(cb&&cb.checked)done++});
-  details.forEach(d=>{const cb=document.getElementById('cb_d_'+d.key);if(cb&&cb.checked)done++});
-  if(total===0){document.getElementById('progressFill').style.width='0%';document.getElementById('progressLabel').textContent='0/0';return}
-  document.getElementById('progressFill').style.width=Math.round(done/total*100)+'%';
-  document.getElementById('progressLabel').textContent=done+'/'+total;
-}
-
-function calcSleep(){
-  const s=document.getElementById('sleepTime').value;
-  const w=document.getElementById('wakeTime').value;
-  if(!s||!w)return;
-  const[sh,sm]=s.split(':').map(Number);
-  const[wh,wm]=w.split(':').map(Number);
-  let mins=(wh*60+wm)-(sh*60+sm);
-  if(mins<0)mins+=1440;
-  const h=Math.floor(mins/60),m=mins%60;
-  document.getElementById('sleepDuration').value=h+'時間'+m+'分';
-}
-
-// ===== Saveボタンのフラッシュ =====
-function flashSaveBtn(){
-  const btn=document.getElementById('saveBtn');
-  if(!btn)return;
-  btn.textContent='✓ Saved!';
-  btn.classList.add('saved');
-  setTimeout(()=>{
-    btn.textContent='Save';
-    btn.classList.remove('saved');
-  },2000);
-}
-
-function saveDay(){
-  const key=dateKey(currentDate);
+function collectData(){
   const habits=getHabits();
   const details=getDetails();
   const total=habits.length+details.length;
@@ -473,14 +351,115 @@ function saveDay(){
     duration:document.getElementById('sleepDuration').value
   };
   data.completion=total>0?Math.round(done/total*100):0;
-  save(key,data);
+  return data;
+}
+
+function commitSave(){
+  save(dateKey(currentDate),collectData());
+}
+
+function saveDay(){
+  commitSave();
   flashSaveBtn();
+}
+
+function flashSaveBtn(){
+  const btn=document.getElementById('saveBtn');
+  if(!btn)return;
+  btn.textContent='✓ Saved!';
+  btn.classList.add('saved');
+  setTimeout(()=>{btn.textContent='Save';btn.classList.remove('saved')},2000);
+}
+
+// ===== HABITS =====
+function renderHabitGrid(){
+  const habits=getHabits();
+  const g=document.getElementById('habitGrid');g.innerHTML='';
+  habits.forEach(h=>{
+    const d=document.createElement('div');
+    d.className='habit-item';d.id='hi_'+h.key;
+    // クリックイベントはdiv全体に1つだけ設定（チェックボックスへの直接クリックも含む）
+    d.innerHTML=`<input type="checkbox" id="cb_${h.key}"><label for="cb_${h.key}">${h.label}</label>`;
+    // チェックボックスのchangeイベントで保存
+    const cb=d.querySelector('input');
+    cb.addEventListener('change',()=>{styleHabit(h.key);updateProgress();autoSave()});
+    g.appendChild(d);
+  });
+}
+function styleHabit(key){
+  const cb=document.getElementById('cb_'+key);
+  const el=document.getElementById('hi_'+key);
+  if(el)el.className='habit-item'+(cb&&cb.checked?' done':'');
+}
+
+// ===== DETAILS =====
+function renderDetailCards(){
+  const details=getDetails();
+  const container=document.getElementById('detailCards');container.innerHTML='';
+  details.forEach(d=>{
+    const card=document.createElement('div');card.className='detail-card';
+    let fieldsHTML='';
+    if(d.isMuscle){
+      fieldsHTML=`<div id="muscleList_${d.key}"></div><button class="add-muscle-btn" onclick="addMuscle('${d.key}')">＋ 種目を追加</button>`;
+    }else if(d.extra){
+      fieldsHTML=`<div class="detail-fields">
+        <div class="field-row"><label>${d.fieldLabel}</label><input type="${d.fieldType||'text'}" id="df_${d.key}_main" placeholder="${d.fieldPlaceholder}" step="0.1" min="0" oninput="autoSave()"></div>
+        <div class="field-row"><label>タイム</label><input type="text" id="df_${d.key}_time" placeholder="例: 32:15" oninput="autoSave()"></div>
+      </div>`;
+    }else if(d.fieldLabel){
+      fieldsHTML=`<div class="detail-fields"><div class="field-row"><label>${d.fieldLabel}</label><input type="text" id="df_${d.key}_main" placeholder="${d.fieldPlaceholder||''}" oninput="autoSave()"></div></div>`;
+    }
+    card.innerHTML=`
+      <div class="detail-header" id="dh_${d.key}">
+        <input type="checkbox" id="cb_d_${d.key}">
+        <label for="cb_d_${d.key}">${d.label}</label>
+      </div>${fieldsHTML}`;
+    container.appendChild(card);
+    // チェックボックスのchangeイベント
+    const cb=card.querySelector('#cb_d_'+d.key);
+    if(cb)cb.addEventListener('change',()=>{updateProgress();autoSave()});
+    if(d.isMuscle)renderMuscles(d.key);
+  });
+}
+
+function addMuscle(key){muscles.push({detailKey:key,name:'',reps:''});renderMuscles(key)}
+function renderMuscles(key){
+  const el=document.getElementById('muscleList_'+key);if(!el)return;
+  const myMuscles=muscles.filter(m=>m.detailKey===key);
+  el.innerHTML='';
+  myMuscles.forEach(m=>{
+    const globalIdx=muscles.indexOf(m);
+    const d=document.createElement('div');d.className='muscle-row';
+    d.innerHTML=`<input type="text" placeholder="種目名（例: スクワット）" value="${m.name}" oninput="muscles[${globalIdx}].name=this.value;autoSave()"><input type="number" placeholder="回数" min="0" value="${m.reps}" oninput="muscles[${globalIdx}].reps=this.value;autoSave()"><button class="del-btn" onclick="muscles.splice(${globalIdx},1);renderMuscles('${key}');autoSave()">✕</button>`;
+    el.appendChild(d);
+  });
+}
+
+function updateProgress(){
+  const habits=getHabits();const details=getDetails();
+  const total=habits.length+details.length;let done=0;
+  habits.forEach(h=>{const cb=document.getElementById('cb_'+h.key);if(cb&&cb.checked)done++});
+  details.forEach(d=>{const cb=document.getElementById('cb_d_'+d.key);if(cb&&cb.checked)done++});
+  if(total===0){document.getElementById('progressFill').style.width='0%';document.getElementById('progressLabel').textContent='0/0';return}
+  document.getElementById('progressFill').style.width=Math.round(done/total*100)+'%';
+  document.getElementById('progressLabel').textContent=done+'/'+total;
+}
+
+function calcSleep(){
+  const s=document.getElementById('sleepTime').value;
+  const w=document.getElementById('wakeTime').value;
+  if(!s||!w)return;
+  const[sh,sm]=s.split(':').map(Number);
+  const[wh,wm]=w.split(':').map(Number);
+  let mins=(wh*60+wm)-(sh*60+sm);
+  if(mins<0)mins+=1440;
+  const h=Math.floor(mins/60),m=mins%60;
+  document.getElementById('sleepDuration').value=h+'時間'+m+'分';
 }
 
 function loadDay(d){
   const data=load(dateKey(d));
-  const habits=getHabits();
-  const details=getDetails();
+  const habits=getHabits();const details=getDetails();
   habits.forEach(h=>{
     const cb=document.getElementById('cb_'+h.key);
     if(cb){cb.checked=data?.habits?.[h.key]?.checked||false;styleHabit(h.key)}
@@ -529,7 +508,6 @@ function switchTab(name){
 }
 
 function renderSettings(){renderSettingsHabits();renderSettingsDetails()}
-
 function renderSettingsHabits(){
   const habits=getHabits();
   const el=document.getElementById('settingsHabits');el.innerHTML='';
@@ -543,7 +521,6 @@ function renderSettingsHabits(){
     el.appendChild(row);
   });
 }
-
 function renderSettingsDetails(){
   const details=getDetails();
   const el=document.getElementById('settingsDetails');el.innerHTML='';
@@ -557,36 +534,32 @@ function renderSettingsDetails(){
     el.appendChild(row);
   });
 }
-
 function startRenameHabit(key){renamingHabitKey=key;renderSettingsHabits();setTimeout(()=>{const el=document.getElementById('renameHabit_'+key);if(el)el.focus()},50)}
 function confirmRenameHabit(key){
   const input=document.getElementById('renameHabit_'+key);
   if(!input||!input.value.trim())return;
-  const habits=getHabits();
-  const h=habits.find(h=>h.key===key);
+  const habits=getHabits();const h=habits.find(h=>h.key===key);
   if(h)h.label=input.value.trim();
   saveHabits(habits);renamingHabitKey=null;
-  renderSettingsHabits();renderHabitGrid();
+  renderSettingsHabits();renderHabitGrid();loadDay(currentDate);
 }
 function deleteHabit(key){
   if(!confirm('この項目を削除しますか？'))return;
   saveHabits(getHabits().filter(h=>h.key!==key));
-  renderSettingsHabits();renderHabitGrid();updateProgress();
+  renderSettingsHabits();renderHabitGrid();loadDay(currentDate);updateProgress();
 }
 function addHabit(){
   const input=document.getElementById('newHabitName');
   const name=input.value.trim();if(!name)return;
   const habits=getHabits();habits.push({key:genKey(),label:name});
   saveHabits(habits);input.value='';
-  renderSettingsHabits();renderHabitGrid();
+  renderSettingsHabits();renderHabitGrid();loadDay(currentDate);
 }
-
 function startRenameDetail(key){renamingDetailKey=key;renderSettingsDetails();setTimeout(()=>{const el=document.getElementById('renameDetail_'+key);if(el)el.focus()},50)}
 function confirmRenameDetail(key){
   const input=document.getElementById('renameDetail_'+key);
   if(!input||!input.value.trim())return;
-  const details=getDetails();
-  const d=details.find(d=>d.key===key);
+  const details=getDetails();const d=details.find(d=>d.key===key);
   if(d)d.label=input.value.trim();
   saveDetails(details);renamingDetailKey=null;
   renderSettingsDetails();renderDetailCards();loadDay(currentDate);
@@ -594,7 +567,7 @@ function confirmRenameDetail(key){
 function deleteDetail(key){
   if(!confirm('この項目を削除しますか？'))return;
   saveDetails(getDetails().filter(d=>d.key!==key));
-  renderSettingsDetails();renderDetailCards();updateProgress();
+  renderSettingsDetails();renderDetailCards();loadDay(currentDate);updateProgress();
 }
 function addDetail(){
   const input=document.getElementById('newDetailName');
@@ -610,7 +583,6 @@ function getAllDates(){
   for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k?.startsWith('rt_')&&!k.startsWith('rt_config_'))keys.push(k.replace('rt_',''))}
   return keys.sort().reverse();
 }
-
 function renderHistory(){
   const el=document.getElementById('historyContent');
   const dates=getAllDates();
@@ -632,30 +604,22 @@ function renderHistory(){
     el.appendChild(div);
   });
 }
-
 function updateStreakSelect(){
   const sel=document.getElementById('streakSelect');
-  const habits=getHabits();const details=getDetails();
   sel.innerHTML='';
-  [...habits,...details].forEach(item=>{
-    const opt=document.createElement('option');
-    opt.value=item.key;opt.textContent=item.label;
-    sel.appendChild(opt);
+  [...getHabits(),...getDetails()].forEach(item=>{
+    const opt=document.createElement('option');opt.value=item.key;opt.textContent=item.label;sel.appendChild(opt);
   });
 }
 function renderStreak(key){
   const grid=document.getElementById('streakGrid');grid.innerHTML='';
-  const today=localToday();
-  let streak=0,total=0;
+  const today=localToday();let streak=0,total=0;
   const isDetail=getDetails().some(d=>d.key===key);
   for(let i=59;i>=0;i--){
     const d=new Date(today.getFullYear(),today.getMonth(),today.getDate()-i);
     const data=load(dateKey(d));
     let done=false;
-    if(data){
-      if(isDetail)done=data.details?.[key]?.checked||false;
-      else done=data.habits?.[key]?.checked||false;
-    }
+    if(data){if(isDetail)done=data.details?.[key]?.checked||false;else done=data.habits?.[key]?.checked||false}
     if(done){total++;if(i<streak+1)streak++}
     const cell=document.createElement('div');
     cell.className='streak-cell'+(done?' done':'');
@@ -665,8 +629,7 @@ function renderStreak(key){
   document.getElementById('streakLabel').textContent=`連続: ${streak}日 / 過去60日: ${total}日達成`;
 }
 function renderChart(type){
-  const today=localToday();
-  const dates=[];
+  const today=localToday();const dates=[];
   for(let i=29;i>=0;i--){const d=new Date(today.getFullYear(),today.getMonth(),today.getDate()-i);dates.push(dateKey(d))}
   const labels=dates.map(d=>d.slice(5).replace('-','/'));
   let dataArr=[],label='';
@@ -690,7 +653,6 @@ function renderChart(type){
     }}
   });
 }
-
 function initExport(){
   const dates=getAllDates();
   if(!dates.length){document.getElementById('recordCount').textContent='記録がまだありません';return}
@@ -713,8 +675,7 @@ function exportCSV(){
     const row=[d];
     habitKeys.forEach(k=>row.push(data.habits?.[k]?.checked?'1':'0'));
     detailKeys.forEach(k=>{
-      const v=data.details?.[k];
-      if(!v){row.push('0');return}
+      const v=data.details?.[k];if(!v){row.push('0');return}
       let cell=v.checked?'1':'0';
       if(v.main)cell+=' / '+v.main;
       if(v.time)cell+=' ('+v.time+')';
@@ -728,14 +689,18 @@ function exportCSV(){
   const csv=bom+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
   const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
   const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;a.download=`routine_${from||'all'}_to_${to||'all'}.csv`;
+  const a=document.createElement('a');a.href=url;a.download=`routine_${from||'all'}_to_${to||'all'}.csv`;
   a.click();URL.revokeObjectURL(url);
 }
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
 }
+
+// バックグラウンドから復帰したときも自動保存
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='hidden')commitSave();
+});
 
 currentDate=localToday();
 renderHabitGrid();
